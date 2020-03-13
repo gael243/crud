@@ -4,10 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Crud</title>
+    <title>Mapendo</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-    
+    <div class="container">
+       <h1 id="titre">Mapendo Sarl</h1>
+        <div class="row lignegeneral">
+          <div class="row ligne1">
+            <div class="col-lg-6 form1">
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="id" placeholder="Entrer votre Id">
+                        <small id="errorid" class="form-text text-muted"></small>
+                    </div>
+                    <div class="form-group">
+                    <input type="text" class="form-control" id="nom" placeholder="Entrer votre Nom">
+                    <small id="errornom" class="form-text text-muted"></small>
+                    </div>
+                    <div class="form-group">
+                    <input type="text" class="form-control" id="prenom" placeholder="Entrer votre Prenom">
+                    <small id="errorprenom" class="form-text text-muted"></small>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="email" placeholder="Entrer votre Email">
+                        <small id="erroremail" class="form-text text-muted"></small>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="age" placeholder="Entrer l'age">
+                     </div> 
+                </form>
+            </div>
+            <div class="col-lg-6 form2">
+                <form> 
+                     <div class="form-group">
+                            <label for="poste">Selectionner votre Poste</label>
+                            <select class="form-control" id="poste">
+                                <option value="directeur generale">directeur generale</option>
+                                <option value="directeur generale adjoint">directeur generale adjoint</option>
+                                <option value="drh">drh</option>
+                                <option value="assistant drh">assistant drh</option>
+                                <option value="directeur tresorerie">directeur tresorerie</option>
+                                <option value="directeur des operations">directeur des operations</option>
+                                <option value="directeur des credits">directeur des credits</option>
+                                <option value="directeur informatique">directeur informatique</option>
+                                <option value="support reseau">support reseau</option>
+                                <option value="developpeur">developpeur</option>
+                                <option value="caissier">caissier</option>
+                              </select>
+                     </div>
+                      <div class="form-group">
+                        <input type="text" class="form-control" id="phone" placeholder="Entrer votre Numeros de télephone">
+                        <small id="errorphone" class="form-text text-muted"></small>
+                     </div>
+                     <div class="form-group">
+                            <label for="marital">Selectionner votre statutMarital</label>
+                            <select class="form-control" id="marital">
+                                <option value="celibataire">celibataire</option>
+                                <option value="marier">marier</option>
+                                <option value="divorcer">divorcer</option>
+                                <option value="veuf(veuve)">veuf(veuve)</option>
+                              </select>
+                     </div>
+                     <div class="form-group">
+                        <label for="pays">Selectionner votre Pays</label>
+                        <select class="form-control" id="pays">
+                            <option value="RDC">RDC</option>
+                            <option value="OUGANDA">OUGANDA</option>
+                            <option value="RWANDA">RWANDA</option>
+                            <option value="BURUNDI">BURUNDI</option>
+                            <option value="TANZANIE">TANZANIE</option>
+                            <option value="ANGOLA">ANGOLA</option>
+                            <option value="MOZAMBIQUE">MOZAMBIQUE</option>
+                            <option value="AFRIQUE DU SUD">AFRIQUE DU SUD</option>
+                            <option value="FRANCE">FRANCE</option>
+                            <option value="BELGIQUE">BELGIQUE</option>
+                            <option value="BRESILE">BRESILE</option>
+                            <option value="ETATS UNIS">ETATS UNIS</option>
+                            <option value="ALLEMAGNE">ALLEMAGNE</option>
+                          </select>
+                 </div>
+                 <button type="button" id="save" class="btn btn-primary">Submit</button>
+                </form> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Nom</th>
+                        <th>Prenom</th>
+                        <th>Email</th>
+                        <th>Age</th>
+                        <th>Poste</th>
+                        <th>Télephone</th>
+                        <th>Status Marital</th>
+                        <th>Pays d'origine</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+</div>
+    <script src="js/index.js"></script>
 </body>
 </html>
