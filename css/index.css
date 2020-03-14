@@ -14,3 +14,12 @@ margin-left: -50px;
 .lignegeneral{
     border: 1px solid gray;
 }
+.form1 span{
+    color: red;
+}
+.form2 span{
+    color: red;
+}
+.btn-danger{
+    margin-left: 2px;
+}

@@ -27,10 +27,32 @@ afficherTable(employer);
   * enregistrement des valeurs
   */
  
- addbutton.addEventListener('click',(e) => { 
-    if(VerificationCles(employer,manipulateurForm.getId()))
-    alert("la cles existe deja")
-    else{
+ addbutton.addEventListener('click',(e) => {
+
+    if(VerificationCles(employer,manipulateurForm.getId())){
+        alert("la cles existe deja")  
+    }
+   if(!manipulateurForm.getId().length){
+       let errorid= document.querySelector("#errorid");
+       errorid.textContent="ce champs ne doit pas etre vide";
+    }
+    if(!manipulateurForm.getNom().length){
+        let errornom= document.querySelector("#errornom");
+        errornom.textContent="ce champs ne doit pas etre vide";
+     }
+     if(!manipulateurForm.getPrenom().length){
+        let errorprenom= document.querySelector("#errorprenom");
+        errorprenom.textContent="ce champs ne doit pas etre vide";
+     }
+     if(!manipulateurForm.getEmail().length){
+        let erroremail= document.querySelector("#erroremail");
+        erroremail.textContent="ce champs ne doit pas etre vide";
+     }
+     if(!manipulateurForm.getPhone().length){
+        let errorphone= document.querySelector("#errorphone");
+        errorphone.textContent="ce champs ne doit pas etre vide";
+     }
+    else if(manipulateurForm.getId().length || manipulateurForm.getNom().length || manipulateurForm.getPrenom().length || manipulateurForm.getEmail().length || manipulateurForm.getPhone().length ){
       employer.push({
           id:manipulateurForm.getId(),
           nom:manipulateurForm.getNom(),
@@ -111,6 +133,16 @@ afficherTable(employer);
   */
  function ClearTable(){
     tbody.textContent="";
+    let errorid= document.querySelector("#errorid");
+    errorid.textContent="";
+    let errornom= document.querySelector("#errornom");
+    errornom.textContent="";
+    let errorprenom= document.querySelector("#errorprenom");
+    errorprenom.textContent="";
+    let erroremail= document.querySelector("#erroremail");
+    erroremail.textContent="";
+    let errorphone= document.querySelector("#errorphone");
+    errorphone.textContent="";
  }
  
 
