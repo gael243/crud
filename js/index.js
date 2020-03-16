@@ -82,6 +82,7 @@ afficherTable(employer);
 
      for(let employer of employers){
     let tr= document.createElement("tr");
+    tr.setAttribute("id",employer.id);   
     let tdId=document.createElement("td");
     tdId.textContent=employer.id;
     let tdNom=document.createElement("td");
@@ -103,14 +104,28 @@ afficherTable(employer);
 
     let buttonmodifier=document.createElement("button");
     buttonmodifier.setAttribute("type","button");
-    buttonmodifier.setAttribute("class","btn btn-primary")
+    buttonmodifier.setAttribute("class","btn btn-primary");
+    buttonmodifier.setAttribute("data-target",employer.id);
+    buttonmodifier.addEventListener('click',onUpdate);
     buttonmodifier.textContent="modifier";
     let tdModifier=document.createElement("td").appendChild(buttonmodifier);
     
     let buttondelete=document.createElement("button");
     buttondelete.setAttribute("type","button");
-    buttondelete.setAttribute("class","btn btn-danger")
+    buttondelete.setAttribute("class","btn btn-danger");
+    buttondelete.setAttribute("data-target",employer.id);
+    buttondelete.setAttribute("id",employer.id);
     buttondelete.textContent="supprimer";
+    buttondelete.addEventListener('click',(e)=>{
+    const message=confirm("etes-vous sure de vouloir supprimer");
+        if(message){
+     const tr=document.getElementById(e.target.attributes.id.nodeValue);
+     tr.parentNode.removeChild(tr); 
+        }else{
+            return;
+        }
+    })
+    
     let tdDelete=document.createElement("td").appendChild(buttondelete);
 
     tr.appendChild(tdId);
@@ -143,8 +158,60 @@ afficherTable(employer);
     erroremail.textContent="";
     let errorphone= document.querySelector("#errorphone");
     errorphone.textContent="";
+    let buttonUpdate=document.querySelector("#update");
+    buttonUpdate.style.display="none";
  }
- 
+
+
+ /**
+  * 
+  * fill my inputs
+  *  @param {e}
+  * 
+  */
+  function onUpdate(e){
+      let buttonsave=document.querySelector("#save");
+      buttonsave.style.display="none";
+      let buttonupdate=document.querySelector("#update");
+      buttonupdate.style.display="inherit";
+      manipulateurForm.makeIdReadOnly();
+      let selechamp=employer.find(employers => employers.id == e.target.dataset.target);
+      manipulateurForm.setId(selechamp.id);
+      manipulateurForm.setNom(selechamp.nom);
+      manipulateurForm.setPrenom(selechamp.prenom);
+      manipulateurForm.setEmail(selechamp.email);
+      manipulateurForm.setAge(selechamp.age);
+      manipulateurForm.setPoste(selechamp.poste);
+      manipulateurForm.setPhone(selechamp.telephone);
+      manipulateurForm.setStatus(selechamp.status);
+      manipulateurForm.setPays(selechamp.pays);
+  }
+  /**
+   * 
+   * update my table  
+   *  
+   */
+  let buttonupdatedata=document.querySelector("#update");
+  let buttonsave=document.querySelector("#save");
+  buttonupdatedata.addEventListener('click',(e)=>{
+      let index= employer.findIndex(employers => employers.id === manipulateurForm.getId());
+       employer.splice(index,1,{
+           id:manipulateurForm.getId(),
+           nom:manipulateurForm.getNom(),
+           prenom:manipulateurForm.getPrenom(),
+           email:manipulateurForm.getEmail(),
+           age:manipulateurForm.getAge(),
+           poste:manipulateurForm.getAge(),
+           telephone:manipulateurForm.getPhone(),
+           status:manipulateurForm.getStatus(),
+           pays:manipulateurForm.getStatus()
+       })
+       afficherTable(employer);
+       buttonupdatedata.style.display="none";
+       buttonsave.style.display="inherit";
+       manipulateurForm.removeReadOnlyConstraint();
+       manipulateurForm.initializeInput();
+  })
 
  
 
@@ -308,4 +375,19 @@ ManipulateurForm.prototype.initializeInput=function(){
     this.setEmail('');
     this.setAge('');
     this.setPhone('');
+}
+/**
+ * @param {void}
+ * @return {}
+ */
+ManipulateurForm.prototype.makeIdReadOnly = function() {
+    this.id.setAttribute('readOnly', 'true');
+}
+/**
+ *  @param {void}
+ *  @return {}
+ */
+
+ManipulateurForm.prototype.removeReadOnlyConstraint = function() {
+    this.id.removeAttribute('readOnly');
 }
