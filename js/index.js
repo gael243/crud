@@ -1,0 +1,393 @@
+var employer=[
+    {
+    id:"001",
+    nom:"mapwata",
+    prenom:"gael",
+    email:"gmapwata",
+    age:"21",
+    poste:"dddd",
+    telephone:"000000",
+    status:"marier",
+    pays:"rdc"
+}
+]
+
+const manipulateurForm=new ManipulateurForm();
+
+
+
+
+
+let addbutton=document.querySelector("#save");
+let tbody=document.querySelector("tbody"); 
+
+afficherTable(employer);
+
+/**
+  * enregistrement des valeurs
+  */
+ 
+ addbutton.addEventListener('click',(e) => {
+
+    if(VerificationCles(employer,manipulateurForm.getId())){
+        alert("la cles existe deja")  
+    }
+   if(!manipulateurForm.getId().length){
+       let errorid= document.querySelector("#errorid");
+       errorid.textContent="ce champs ne doit pas etre vide";
+    }
+    if(!manipulateurForm.getNom().length){
+        let errornom= document.querySelector("#errornom");
+        errornom.textContent="ce champs ne doit pas etre vide";
+     }
+     if(!manipulateurForm.getPrenom().length){
+        let errorprenom= document.querySelector("#errorprenom");
+        errorprenom.textContent="ce champs ne doit pas etre vide";
+     }
+     if(!manipulateurForm.getEmail().length){
+        let erroremail= document.querySelector("#erroremail");
+        erroremail.textContent="ce champs ne doit pas etre vide";
+     }
+     if(!manipulateurForm.getPhone().length){
+        let errorphone= document.querySelector("#errorphone");
+        errorphone.textContent="ce champs ne doit pas etre vide";
+     }
+    else if(manipulateurForm.getId().length || manipulateurForm.getNom().length || manipulateurForm.getPrenom().length || manipulateurForm.getEmail().length || manipulateurForm.getPhone().length ){
+      employer.push({
+          id:manipulateurForm.getId(),
+          nom:manipulateurForm.getNom(),
+          prenom:manipulateurForm.getPrenom(),
+          email:manipulateurForm.getEmail(),
+          age:manipulateurForm.getAge(),
+          poste:manipulateurForm.getPoste(),
+          telephone:manipulateurForm.getPhone(),
+          status:manipulateurForm.getStatus(),
+          pays:manipulateurForm.getPays()
+       });
+   
+   afficherTable(employer);
+   manipulateurForm.initializeInput();
+    }
+   },false);
+
+/**
+ * 
+ * @param {*}employers
+ * @returns {void}
+ */
+ function afficherTable(employers){
+     ClearTable();
+
+
+
+     for(let employer of employers){
+    let tr= document.createElement("tr");
+    tr.setAttribute("id",employer.id);   
+    let tdId=document.createElement("td");
+    tdId.textContent=employer.id;
+    let tdNom=document.createElement("td");
+    tdNom.textContent=employer.nom;
+    let tdPrenom=document.createElement("td");
+    tdPrenom.textContent=employer.prenom;
+    let tdEmail=document.createElement("td");
+    tdEmail.textContent=employer.email;
+    let tdAge=document.createElement("td");
+    tdAge.textContent=employer.age;
+    let tdPoste=document.createElement("td");
+    tdPoste.textContent=employer.poste;
+    let tdTelephone=document.createElement("td");
+    tdTelephone.textContent=employer.telephone;
+    let tdStatus=document.createElement("td");
+    tdStatus.textContent=employer.status;
+    let tdPays=document.createElement("td");
+    tdPays.textContent=employer.pays;
+
+    let buttonmodifier=document.createElement("button");
+    buttonmodifier.setAttribute("type","button");
+    buttonmodifier.setAttribute("class","btn btn-primary");
+    buttonmodifier.setAttribute("data-target",employer.id);
+    buttonmodifier.addEventListener('click',onUpdate);
+    buttonmodifier.textContent="modifier";
+    let tdModifier=document.createElement("td").appendChild(buttonmodifier);
+    
+    let buttondelete=document.createElement("button");
+    buttondelete.setAttribute("type","button");
+    buttondelete.setAttribute("class","btn btn-danger");
+    buttondelete.setAttribute("data-target",employer.id);
+    buttondelete.setAttribute("id",employer.id);
+    buttondelete.textContent="supprimer";
+    buttondelete.addEventListener('click',(e)=>{
+    const message=confirm("etes-vous sure de vouloir supprimer");
+        if(message){
+     const tr=document.getElementById(e.target.attributes.id.nodeValue);
+     tr.parentNode.removeChild(tr); 
+        }else{
+            return;
+        }
+    })
+    
+    let tdDelete=document.createElement("td").appendChild(buttondelete);
+
+    tr.appendChild(tdId);
+    tr.appendChild(tdNom);
+    tr.appendChild(tdPrenom);
+    tr.appendChild(tdEmail);
+    tr.appendChild(tdAge);
+    tr.appendChild(tdPoste);
+    tr.appendChild(tdTelephone);
+    tr.appendChild(tdStatus);
+    tr.appendChild(tdPays);
+    tr.appendChild(tdModifier);
+    tr.appendChild(tdDelete);
+    tbody.appendChild(tr);
+     }
+ }
+ /**
+  * 
+  *  @returns {void}
+  */
+ function ClearTable(){
+    tbody.textContent="";
+    let errorid= document.querySelector("#errorid");
+    errorid.textContent="";
+    let errornom= document.querySelector("#errornom");
+    errornom.textContent="";
+    let errorprenom= document.querySelector("#errorprenom");
+    errorprenom.textContent="";
+    let erroremail= document.querySelector("#erroremail");
+    erroremail.textContent="";
+    let errorphone= document.querySelector("#errorphone");
+    errorphone.textContent="";
+    let buttonUpdate=document.querySelector("#update");
+    buttonUpdate.style.display="none";
+ }
+
+
+ /**
+  * 
+  * fill my inputs
+  *  @param {e}
+  * 
+  */
+  function onUpdate(e){
+      let buttonsave=document.querySelector("#save");
+      buttonsave.style.display="none";
+      let buttonupdate=document.querySelector("#update");
+      buttonupdate.style.display="inherit";
+      manipulateurForm.makeIdReadOnly();
+      let selechamp=employer.find(employers => employers.id == e.target.dataset.target);
+      manipulateurForm.setId(selechamp.id);
+      manipulateurForm.setNom(selechamp.nom);
+      manipulateurForm.setPrenom(selechamp.prenom);
+      manipulateurForm.setEmail(selechamp.email);
+      manipulateurForm.setAge(selechamp.age);
+      manipulateurForm.setPoste(selechamp.poste);
+      manipulateurForm.setPhone(selechamp.telephone);
+      manipulateurForm.setStatus(selechamp.status);
+      manipulateurForm.setPays(selechamp.pays);
+  }
+  /**
+   * 
+   * update my table  
+   *  
+   */
+  let buttonupdatedata=document.querySelector("#update");
+  let buttonsave=document.querySelector("#save");
+  buttonupdatedata.addEventListener('click',(e)=>{
+      let index= employer.findIndex(employers => employers.id === manipulateurForm.getId());
+       employer.splice(index,1,{
+           id:manipulateurForm.getId(),
+           nom:manipulateurForm.getNom(),
+           prenom:manipulateurForm.getPrenom(),
+           email:manipulateurForm.getEmail(),
+           age:manipulateurForm.getAge(),
+           poste:manipulateurForm.getAge(),
+           telephone:manipulateurForm.getPhone(),
+           status:manipulateurForm.getStatus(),
+           pays:manipulateurForm.getStatus()
+       })
+       afficherTable(employer);
+       buttonupdatedata.style.display="none";
+       buttonsave.style.display="inherit";
+       manipulateurForm.removeReadOnlyConstraint();
+       manipulateurForm.initializeInput();
+  })
+
+ 
+
+ /**
+  * @param {array,id}
+  *  @returns {boolean}
+  */
+ 
+ function VerificationCles(employer,id){
+    return employer.findIndex(employers => employers.id === id) >-1;
+}
+/**
+ * @constructor
+ */
+ function ManipulateurForm(){
+     this.id=document.querySelector("#id");
+     this.nom=document.querySelector("#nom");
+     this.prenom=document.querySelector("#prenom");
+     this.email=document.querySelector("#email");
+     this.age=document.querySelector("#age");
+     this.poste=document.querySelector("#poste");
+     this.phone=document.querySelector("#phone");
+     this.status=document.querySelector("#marital");
+     this.pays=document.querySelector("#pays");
+ }
+ /**
+  *  @param {void}
+  *  @returns {string}
+  */
+ ManipulateurForm.prototype.getId=function(){
+     return this.id.value;
+ }
+ /**
+  *  @param {string}value
+  *  @returns {void}
+  */
+ ManipulateurForm.prototype.setId=function(value){
+     this.id.value=value;
+}
+/**
+  *  @param {void}
+  *  @returns {string}
+  */
+ ManipulateurForm.prototype.getNom=function(){
+    return this.nom.value;
+}
+/**
+ *  @param {string}value
+ *  @returns {void}
+ */
+ManipulateurForm.prototype.setNom=function(value){
+    this.nom.value=value;
+}
+/**
+  *  @param {void}
+  *  @returns {string}
+  */
+ ManipulateurForm.prototype.getPrenom=function(){
+    return this.prenom.value;
+}
+/**
+ *  @param {string}value
+ *  @returns {void}
+ */
+ManipulateurForm.prototype.setPrenom=function(value){
+    this.prenom.value=value;
+}
+/**
+  *  @param {void}
+  *  @returns {string}
+  */
+ ManipulateurForm.prototype.getEmail=function(){
+    return this.email.value;
+}
+/**
+ *  @param {string}value
+ *  @returns {void}
+ */
+ManipulateurForm.prototype.setEmail=function(value){
+    this.email.value=value;
+}
+/**
+  *  @param {void}
+  *  @returns {string}
+  */
+ ManipulateurForm.prototype.getAge=function(){
+    return this.age.value;
+}
+/**
+ *  @param {string}value
+ *  @returns {void}
+ */
+ManipulateurForm.prototype.setAge=function(value){
+    this.age.value=value;
+}
+/**
+  *  @param {void}
+  *  @returns {string}
+  */
+ ManipulateurForm.prototype.getPoste=function(){
+    return this.poste.value;
+}
+/**
+ *  @param {string}value
+ *  @returns {void}
+ */
+ManipulateurForm.prototype.setPoste=function(value){
+    this.poste.value=value;
+}
+/**
+  *  @param {void}
+  *  @returns {string}
+  */
+ ManipulateurForm.prototype.getPhone=function(){
+    return this.phone.value;
+}
+/**
+ *  @param {string}value
+ *  @returns {void}
+ */
+ManipulateurForm.prototype.setPhone=function(value){
+    this.phone.value=value;
+}
+/**
+  *  @param {void}
+  *  @returns {string}
+  */
+ ManipulateurForm.prototype.getStatus=function(){
+    return this.status.value;
+}
+/**
+ *  @param {string}value
+ *  @returns {void}
+ */
+ManipulateurForm.prototype.setStatus=function(value){
+    this.status.value=value;
+}
+/**
+  *  @param {void}
+  *  @returns {string}
+  */
+ ManipulateurForm.prototype.getPays=function(){
+    return this.pays.value;
+}
+/**
+ *  @param {string}value
+ *  @returns {void}
+ */
+ManipulateurForm.prototype.setPays=function(value){
+    this.pays.value=value;
+}
+
+/**
+ *  @param {void}
+ *  @returns {}
+ */
+ManipulateurForm.prototype.initializeInput=function(){
+    this.setId('');
+    this.setNom('');
+    this.setPrenom('');
+    this.setEmail('');
+    this.setAge('');
+    this.setPhone('');
+}
+/**
+ * @param {void}
+ * @return {}
+ */
+ManipulateurForm.prototype.makeIdReadOnly = function() {
+    this.id.setAttribute('readOnly', 'true');
+}
+/**
+ *  @param {void}
+ *  @return {}
+ */
+
+ManipulateurForm.prototype.removeReadOnlyConstraint = function() {
+    this.id.removeAttribute('readOnly');
+}
