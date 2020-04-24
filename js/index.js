@@ -39,7 +39,7 @@ afficherTable();
                 }).catch((err)=>{
                     console.log(err.response.data)
                 })
-                
+
    manipulateurForm.initializeInput();
     }
    },false);
