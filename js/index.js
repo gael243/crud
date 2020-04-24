@@ -24,15 +24,14 @@ afficherTable();
         errorphone.textContent="ce champs ne doit pas etre vide";
      }
     else if(manipulateurForm.getNom().length || manipulateurForm.getPrenom().length ||  manipulateurForm.getPhone().length ){
-        if(manipulateurForm.getMarierOui()){
             axios.post('http://167.71.45.243:4000/api/employes?api_key=urrzckb',{
-                numeroTelephone:manipulateurForm.getPhone(),    
                 nom:manipulateurForm.getNom(),
                 prenom:manipulateurForm.getPrenom(),
-                estMarie:manipulateurForm.getMarierOui(),
-                pays:manipulateurForm.getPays(),
                 email:manipulateurForm.getEmail(),
-                poste:manipulateurForm.getPoste()
+                poste:manipulateurForm.getPoste(),
+                numeroTelephone:manipulateurForm.getPhone(),
+                estMarie: manipulateurForm.getEstMarie(),
+                pays:manipulateurForm.getPays()
                })
                 .then((response)=>{
                     afficherTable();
@@ -40,23 +39,6 @@ afficherTable();
                 }).catch((err)=>{
                     console.log(err.response.data)
                 })
-        }else{
-            axios.post('http://167.71.45.243:4000/api/employes?api_key=urrzckb',{
-                numeroTelephone:manipulateurForm.getPhone(),    
-                nom:manipulateurForm.getNom(),
-                prenom:manipulateurForm.getPrenom(),
-                estMarie:manipulateurForm.getMarierNon(),
-                pays:manipulateurForm.getPays(),
-                email:manipulateurForm.getEmail(),
-                poste:manipulateurForm.getPoste()
-               })
-                .then((response)=>{
-                    afficherTable();
-                    console.log(response);
-                }).catch((err)=>{
-                    console.log(err.response.data)
-                })
-        }
 
    manipulateurForm.initializeInput();
     }
@@ -157,7 +139,7 @@ axios.get('http://167.71.45.243:4000/api/employes?api_key=urrzckb')
 
  /**
   * 
-  * fill my inputs
+  * 
   *  @param {e}
   */
   function onUpdate(e){ 
