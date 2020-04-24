@@ -1,41 +1,16 @@
-var employer=[
-    {
-    id:"001",
-    nom:"mapwata",
-    prenom:"gael",
-    email:"gmapwata",
-    age:"21",
-    poste:"dddd",
-    telephone:"000000",
-    status:"marier",
-    pays:"rdc"
-}
-]
 
 const manipulateurForm=new ManipulateurForm();
-
-
-
-
 
 let addbutton=document.querySelector("#save");
 let tbody=document.querySelector("tbody"); 
 
-afficherTable(employer);
+afficherTable();
 
 /**
   * enregistrement des valeurs
   */
  
  addbutton.addEventListener('click',(e) => {
-
-    if(VerificationCles(employer,manipulateurForm.getId())){
-        alert("la cles existe deja")  
-    }
-   if(!manipulateurForm.getId().length){
-       let errorid= document.querySelector("#errorid");
-       errorid.textContent="ce champs ne doit pas etre vide";
-    }
     if(!manipulateurForm.getNom().length){
         let errornom= document.querySelector("#errornom");
         errornom.textContent="ce champs ne doit pas etre vide";
@@ -44,28 +19,45 @@ afficherTable(employer);
         let errorprenom= document.querySelector("#errorprenom");
         errorprenom.textContent="ce champs ne doit pas etre vide";
      }
-     if(!manipulateurForm.getEmail().length){
-        let erroremail= document.querySelector("#erroremail");
-        erroremail.textContent="ce champs ne doit pas etre vide";
-     }
      if(!manipulateurForm.getPhone().length){
         let errorphone= document.querySelector("#errorphone");
         errorphone.textContent="ce champs ne doit pas etre vide";
      }
-    else if(manipulateurForm.getId().length || manipulateurForm.getNom().length || manipulateurForm.getPrenom().length || manipulateurForm.getEmail().length || manipulateurForm.getPhone().length ){
-      employer.push({
-          id:manipulateurForm.getId(),
-          nom:manipulateurForm.getNom(),
-          prenom:manipulateurForm.getPrenom(),
-          email:manipulateurForm.getEmail(),
-          age:manipulateurForm.getAge(),
-          poste:manipulateurForm.getPoste(),
-          telephone:manipulateurForm.getPhone(),
-          status:manipulateurForm.getStatus(),
-          pays:manipulateurForm.getPays()
-       });
-   
-   afficherTable(employer);
+    else if(manipulateurForm.getNom().length || manipulateurForm.getPrenom().length ||  manipulateurForm.getPhone().length ){
+        if(manipulateurForm.getMarierOui()){
+            axios.post('http://167.71.45.243:4000/api/employes?api_key=urrzckb',{
+                numeroTelephone:manipulateurForm.getPhone(),    
+                nom:manipulateurForm.getNom(),
+                prenom:manipulateurForm.getPrenom(),
+                estMarie:manipulateurForm.getMarierOui(),
+                pays:manipulateurForm.getPays(),
+                email:manipulateurForm.getEmail(),
+                poste:manipulateurForm.getPoste()
+               })
+                .then((response)=>{
+                    afficherTable();
+                    console.log(response);
+                }).catch((err)=>{
+                    console.log(err.response.data)
+                })
+        }else{
+            axios.post('http://167.71.45.243:4000/api/employes?api_key=urrzckb',{
+                numeroTelephone:manipulateurForm.getPhone(),    
+                nom:manipulateurForm.getNom(),
+                prenom:manipulateurForm.getPrenom(),
+                estMarie:manipulateurForm.getMarierNon(),
+                pays:manipulateurForm.getPays(),
+                email:manipulateurForm.getEmail(),
+                poste:manipulateurForm.getPoste()
+               })
+                .then((response)=>{
+                    afficherTable();
+                    console.log(response);
+                }).catch((err)=>{
+                    console.log(err.response.data)
+                })
+        }
+
    manipulateurForm.initializeInput();
     }
    },false);
@@ -75,81 +67,80 @@ afficherTable(employer);
  * @param {*}employers
  * @returns {void}
  */
- function afficherTable(employers){
+ function afficherTable(){
      ClearTable();
 
+axios.get('http://167.71.45.243:4000/api/employes?api_key=urrzckb')
+.then((employers)=>{
+    for(let employer of employers.data){
 
-
-     for(let employer of employers){
-    let tr= document.createElement("tr");
-    tr.setAttribute("id",employer.id);   
-    let tdId=document.createElement("td");
-    tdId.textContent=employer.id;
-    let tdNom=document.createElement("td");
-    tdNom.textContent=employer.nom;
-    let tdPrenom=document.createElement("td");
-    tdPrenom.textContent=employer.prenom;
-    let tdEmail=document.createElement("td");
-    tdEmail.textContent=employer.email;
-    let tdAge=document.createElement("td");
-    tdAge.textContent=employer.age;
-    let tdPoste=document.createElement("td");
-    tdPoste.textContent=employer.poste;
-    let tdTelephone=document.createElement("td");
-    tdTelephone.textContent=employer.telephone;
-    let tdStatus=document.createElement("td");
-    tdStatus.textContent=employer.status;
-    let tdPays=document.createElement("td");
-    tdPays.textContent=employer.pays;
-
-    let buttonmodifier=document.createElement("button");
-    buttonmodifier.setAttribute("type","button");
-    buttonmodifier.setAttribute("class","btn btn-primary");
-    buttonmodifier.setAttribute("data-target",employer.id);
-    buttonmodifier.addEventListener('click',onUpdate);
-    buttonmodifier.textContent="modifier";
-    let tdModifier=document.createElement("td").appendChild(buttonmodifier);
+        let tr= document.createElement("tr");
+        tr.setAttribute("id",employer._id);   
+        let tdNom=document.createElement("td");
+        tdNom.textContent=employer.nom;
+        let tdPrenom=document.createElement("td");
+        tdPrenom.textContent=employer.prenom;
+        let tdEstmaries=document.createElement("td");
+        tdEstmaries.textContent=employer.estMarie;
+        let tdPays=document.createElement("td");
+        tdPays.textContent=employer.pays;
+        let tdEmail=document.createElement("td");
+        tdEmail.textContent=employer.email;
+        let tdPoste=document.createElement("td");
+        tdPoste.textContent=employer.poste;
+        let tdTelephone=document.createElement("td");
+        tdTelephone.textContent=employer.numeroTelephone;  
     
-    let buttondelete=document.createElement("button");
-    buttondelete.setAttribute("type","button");
-    buttondelete.setAttribute("class","btn btn-danger");
-    buttondelete.setAttribute("data-target",employer.id);
-    buttondelete.setAttribute("id",employer.id);
-    buttondelete.textContent="supprimer";
-    buttondelete.addEventListener('click',(e)=>{
-    const message=confirm("etes-vous sure de vouloir supprimer");
-        if(message){
-     const tr=document.getElementById(e.target.attributes.id.nodeValue);
-     tr.parentNode.removeChild(tr); 
-        }else{
-            return;
-        }
-    })
-    
-    let tdDelete=document.createElement("td").appendChild(buttondelete);
+        let buttonmodifier=document.createElement("button");
+        buttonmodifier.setAttribute("type","button");
+        buttonmodifier.setAttribute("class","btn btn-primary");
+        buttonmodifier.setAttribute("data-target",employer._id);
+        buttonmodifier.addEventListener('click',onUpdate);
+        buttonmodifier.textContent="modifier";
+        let tdModifier=document.createElement("td").appendChild(buttonmodifier);
+        
+        let buttondelete=document.createElement("button");
+        buttondelete.setAttribute("type","button");
+        buttondelete.setAttribute("class","btn btn-danger");
+        buttondelete.setAttribute("data-target",employer._id);
+        buttondelete.setAttribute("id",employer._id);
+        buttondelete.textContent="supprimer";
+        buttondelete.addEventListener('click',(e)=>{    
+        const message=confirm("etes-vous sure de vouloir supprimer");
+            if(message){
+          axios.delete(`http://167.71.45.243:4000/api/employes/${employer._id}?api_key=urrzckb`)
+                .then(function(reponse){
+                    afficherTable();
+                }).catch(function(erreur){
+                    console.log(erreur.response)
+                })
+            }else{
+                return;
+            }
+        })
+        let tdDelete=document.createElement("td").appendChild(buttondelete);
+        tr.appendChild(tdNom);
+        tr.appendChild(tdPrenom);
+        tr.appendChild(tdEstmaries);
+        tr.appendChild(tdPays);
+        tr.appendChild(tdEmail);
+        tr.appendChild(tdPoste);
+        tr.appendChild(tdTelephone); 
+        tr.appendChild(tdModifier);
+        tr.appendChild(tdDelete);
+        tbody.appendChild(tr);
+    }
 
-    tr.appendChild(tdId);
-    tr.appendChild(tdNom);
-    tr.appendChild(tdPrenom);
-    tr.appendChild(tdEmail);
-    tr.appendChild(tdAge);
-    tr.appendChild(tdPoste);
-    tr.appendChild(tdTelephone);
-    tr.appendChild(tdStatus);
-    tr.appendChild(tdPays);
-    tr.appendChild(tdModifier);
-    tr.appendChild(tdDelete);
-    tbody.appendChild(tr);
-     }
- }
+}).catch((err)=>{
+    console.log(err);
+})
+}
  /**
   * 
   *  @returns {void}
   */
  function ClearTable(){
     tbody.textContent="";
-    let errorid= document.querySelector("#errorid");
-    errorid.textContent="";
     let errornom= document.querySelector("#errornom");
     errornom.textContent="";
     let errorprenom= document.querySelector("#errorprenom");
@@ -160,6 +151,7 @@ afficherTable(employer);
     errorphone.textContent="";
     let buttonUpdate=document.querySelector("#update");
     buttonUpdate.style.display="none";
+    manipulateurForm.id.style.display="none";
  }
 
 
@@ -174,17 +166,24 @@ afficherTable(employer);
       buttonsave.style.display="none";
       let buttonupdate=document.querySelector("#update");
       buttonupdate.style.display="inherit";
+      manipulateurForm.id.style.display="inherit";
       manipulateurForm.makeIdReadOnly();
-      let selechamp=employer.find(employers => employers.id == e.target.dataset.target);
-      manipulateurForm.setId(selechamp.id);
-      manipulateurForm.setNom(selechamp.nom);
-      manipulateurForm.setPrenom(selechamp.prenom);
-      manipulateurForm.setEmail(selechamp.email);
-      manipulateurForm.setAge(selechamp.age);
-      manipulateurForm.setPoste(selechamp.poste);
-      manipulateurForm.setPhone(selechamp.telephone);
-      manipulateurForm.setStatus(selechamp.status);
-      manipulateurForm.setPays(selechamp.pays);
+      let ids=e.target.dataset.target;
+      axios.get(`http://167.71.45.243:4000/api/employes/${ids}?api_key=urrzckb`)
+      .then(function(response){
+        manipulateurForm.setId(response.data._id);
+        manipulateurForm.setNom(response.data.nom);
+        manipulateurForm.setPrenom(response.data.prenom);
+        manipulateurForm.setMarierOui(response.data.estMarie)
+        manipulateurForm.appendPost(response.data.poste);
+        manipulateurForm.setPhone(response.data.numeroTelephone);
+        manipulateurForm.setEmail(response.data.email);
+        manipulateurForm.setPays(response.data.pays);
+      })
+      .catch(function(err){
+          console.log(err.response)
+      })
+
   }
   /**
    * 
@@ -213,16 +212,6 @@ afficherTable(employer);
        manipulateurForm.initializeInput();
   })
 
- 
-
- /**
-  * @param {array,id}
-  *  @returns {boolean}
-  */
- 
- function VerificationCles(employer,id){
-    return employer.findIndex(employers => employers.id === id) >-1;
-}
 /**
  * @constructor
  */
@@ -231,25 +220,25 @@ afficherTable(employer);
      this.nom=document.querySelector("#nom");
      this.prenom=document.querySelector("#prenom");
      this.email=document.querySelector("#email");
-     this.age=document.querySelector("#age");
      this.poste=document.querySelector("#poste");
      this.phone=document.querySelector("#phone");
-     this.status=document.querySelector("#marital");
      this.pays=document.querySelector("#pays");
+     this.marieroui=document.querySelector("#oui");
+     this.mariernon=document.querySelector("#non")
  }
  /**
   *  @param {void}
   *  @returns {string}
   */
  ManipulateurForm.prototype.getId=function(){
-     return this.id.value;
- }
- /**
-  *  @param {string}value
-  *  @returns {void}
-  */
- ManipulateurForm.prototype.setId=function(value){
-     this.id.value=value;
+    return this.id.value;
+}
+/**
+ *  @param {string}value
+ *  @returns {void}
+ */
+ManipulateurForm.prototype.setId=function(value){
+    this.id.value=value;
 }
 /**
   *  @param {void}
@@ -297,15 +286,29 @@ ManipulateurForm.prototype.setEmail=function(value){
   *  @param {void}
   *  @returns {string}
   */
- ManipulateurForm.prototype.getAge=function(){
-    return this.age.value;
+ ManipulateurForm.prototype.getMarierOui=function(){
+    return this.marieroui.value;
 }
 /**
  *  @param {string}value
  *  @returns {void}
  */
-ManipulateurForm.prototype.setAge=function(value){
-    this.age.value=value;
+ManipulateurForm.prototype.setMarierOui=function(value){
+    this.marieroui.value=value;
+}
+/**
+  *  @param {void}
+  *  @returns {string}
+  */
+ ManipulateurForm.prototype.getMarierNon=function(){
+    return this.mariernon.value;
+}
+/**
+ *  @param {string}value
+ *  @returns {void}
+ */
+ManipulateurForm.prototype.setMarierNon=function(value){
+    this.mariernon.value=value;
 }
 /**
   *  @param {void}
@@ -339,20 +342,6 @@ ManipulateurForm.prototype.setPhone=function(value){
   *  @param {void}
   *  @returns {string}
   */
- ManipulateurForm.prototype.getStatus=function(){
-    return this.status.value;
-}
-/**
- *  @param {string}value
- *  @returns {void}
- */
-ManipulateurForm.prototype.setStatus=function(value){
-    this.status.value=value;
-}
-/**
-  *  @param {void}
-  *  @returns {string}
-  */
  ManipulateurForm.prototype.getPays=function(){
     return this.pays.value;
 }
@@ -362,6 +351,16 @@ ManipulateurForm.prototype.setStatus=function(value){
  */
 ManipulateurForm.prototype.setPays=function(value){
     this.pays.value=value;
+}
+/**
+  *  @param {void}
+  *  @returns {string}
+  */
+ ManipulateurForm.prototype.appendPost=function(poste){
+     let option=document.createElement('option');
+     option.value=poste;
+     option.textContent=poste;
+     document.querySelector("#poste").append(option);  
 }
 
 /**
@@ -373,7 +372,8 @@ ManipulateurForm.prototype.initializeInput=function(){
     this.setNom('');
     this.setPrenom('');
     this.setEmail('');
-    this.setAge('');
+    this.setMarierOui('');
+    this.setMarierNon('');
     this.setPhone('');
 }
 /**
