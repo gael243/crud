@@ -402,6 +402,35 @@ ManipulateurForm.prototype.makeIdReadOnly = function() {
 ManipulateurForm.prototype.removeReadOnlyConstraint = function() {
     this.id.removeAttribute('readOnly');
 }
+
+
+//gfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgf
+
+let buttonupdatedata=document.querySelector("#update");
+  let buttonsave=document.querySelector("#save");
+  buttonupdatedata.addEventListener('click',(e)=>{
+    let ids=manipulateurForm.getId();  
+    axios.put(`http://167.71.45.243:4000/api/employes/${ids}?api_key=urrzckb`,{
+        numeroTelephone:manipulateurForm.getPhone(),    
+        nom:manipulateurForm.getNom(),
+        prenom:manipulateurForm.getPrenom(),
+        estMarie:manipulateurForm.getMarierNon(),
+        pays:manipulateurForm.getPays(),
+        email:manipulateurForm.getEmail(),
+        poste:manipulateurForm.getPoste()
+       })
+        .then((response)=>{
+            afficherTable();
+            console.log(response);
+        }).catch((err)=>{
+            console.log(err.response.data)
+        })
+       buttonupdatedata.style.display="none";
+       buttonsave.style.display="inherit";
+       manipulateurForm.removeReadOnlyConstraint();
+       manipulateurForm.initializeInput();
+  })
+
         </script>
 </body>
 </html>

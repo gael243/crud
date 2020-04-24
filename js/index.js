@@ -81,7 +81,7 @@ axios.get('http://167.71.45.243:4000/api/employes?api_key=urrzckb')
         let tdPrenom=document.createElement("td");
         tdPrenom.textContent=employer.prenom;
         let tdEstmaries=document.createElement("td");
-        tdEstmaries.textContent=employer.estMarie;
+        tdEstmaries.textContent=employer.estMarie ? 'Oui' : 'Non';
         let tdPays=document.createElement("td");
         tdPays.textContent=employer.pays;
         let tdEmail=document.createElement("td");
@@ -159,30 +159,52 @@ axios.get('http://167.71.45.243:4000/api/employes?api_key=urrzckb')
   * 
   * fill my inputs
   *  @param {e}
-  * 
   */
-  function onUpdate(e){
-      let buttonsave=document.querySelector("#save");
-      buttonsave.style.display="none";
-      let buttonupdate=document.querySelector("#update");
-      buttonupdate.style.display="inherit";
-      manipulateurForm.id.style.display="inherit";
-      manipulateurForm.makeIdReadOnly();
+  function onUpdate(e){ 
+      /**
+       * Axios fonctionne en asynchrone c'est-à-dire les données qui viendrons de l'API ne seront pas directement
+       * disponible au chargement de la page, les données vont arriver avec un petit rétard (dépendamment du réseau)
+       * Alors pour ne pas ennuyer l'utilisateur on afficher un message de chargement en attendant que les données
+       * arrivent
+       */
+      manipulateurForm.showOverlay();
+
+
       let ids=e.target.dataset.target;
+
       axios.get(`http://167.71.45.243:4000/api/employes/${ids}?api_key=urrzckb`)
-      .then(function(response){
-        manipulateurForm.setId(response.data._id);
-        manipulateurForm.setNom(response.data.nom);
-        manipulateurForm.setPrenom(response.data.prenom);
-        manipulateurForm.setMarierOui(response.data.estMarie)
-        manipulateurForm.appendPost(response.data.poste);
-        manipulateurForm.setPhone(response.data.numeroTelephone);
-        manipulateurForm.setEmail(response.data.email);
-        manipulateurForm.setPays(response.data.pays);
-      })
-      .catch(function(err){
-          console.log(err.response)
-      })
+        .then(function(response){
+
+            let buttonsave=document.querySelector("#save");
+            buttonsave.style.display="none";
+            let buttonupdate=document.querySelector("#update");
+            buttonupdate.style.display="inherit";
+            manipulateurForm.id.style.display="inherit";
+            manipulateurForm.makeIdReadOnly();
+
+            manipulateurForm.setId(response.data._id);
+            manipulateurForm.setNom(response.data.nom);
+            manipulateurForm.setPrenom(response.data.prenom);
+            manipulateurForm.setEstMarie(response.data.estMarie);
+            manipulateurForm.appendPost(response.data.poste);
+            manipulateurForm.appendPays(response.data.pays);
+            manipulateurForm.setPhone(response.data.numeroTelephone);
+            manipulateurForm.setEmail(response.data.email);
+
+            /**
+             * Toutes les données sont bien arrivées et chargées dans le formulaire, maintenant on cache le 
+             * message de chargement.
+             */
+            manipulateurForm.hideOverlay();
+        })
+        .catch(function(err){
+            /**
+             * En cas d'erreur on cache aussi le message de chargement.
+             */
+            manipulateurForm.hideOverlay();
+            console.log(err.response)
+        })
+    ;
 
   }
   /**
@@ -192,24 +214,30 @@ axios.get('http://167.71.45.243:4000/api/employes?api_key=urrzckb')
    */
   let buttonupdatedata=document.querySelector("#update");
   let buttonsave=document.querySelector("#save");
-  buttonupdatedata.addEventListener('click',(e)=>{
-      let index= employer.findIndex(employers => employers.id === manipulateurForm.getId());
-       employer.splice(index,1,{
-           id:manipulateurForm.getId(),
-           nom:manipulateurForm.getNom(),
-           prenom:manipulateurForm.getPrenom(),
-           email:manipulateurForm.getEmail(),
-           age:manipulateurForm.getAge(),
-           poste:manipulateurForm.getAge(),
-           telephone:manipulateurForm.getPhone(),
-           status:manipulateurForm.getStatus(),
-           pays:manipulateurForm.getStatus()
-       })
-       afficherTable(employer);
-       buttonupdatedata.style.display="none";
-       buttonsave.style.display="inherit";
-       manipulateurForm.removeReadOnlyConstraint();
-       manipulateurForm.initializeInput();
+  buttonupdatedata.addEventListener('click',(e) => {
+      let ids = manipulateurForm.getId();
+      manipulateurForm.showOverlay();
+
+      axios.put(`http://167.71.45.243:4000/api/employes/${ids}?api_key=urrzckb`, {
+        nom:manipulateurForm.getNom(),
+        prenom:manipulateurForm.getPrenom(),
+        email:manipulateurForm.getEmail(),
+        poste:manipulateurForm.getPoste(),
+        numeroTelephone:manipulateurForm.getPhone(),
+        estMarie: manipulateurForm.getEstMarie(),
+        pays:manipulateurForm.getPays()
+      }).then(response => {
+        console.log(response.data);
+        afficherTable();  
+        manipulateurForm.hideOverlay();
+      }).catch(error => {
+          console.log(error);
+      });
+
+      buttonupdatedata.style.display = "none";
+      buttonsave.style.display = "inherit";
+      manipulateurForm.removeReadOnlyConstraint();
+      manipulateurForm.initializeInput();
   })
 
 /**
@@ -289,12 +317,41 @@ ManipulateurForm.prototype.setEmail=function(value){
  ManipulateurForm.prototype.getMarierOui=function(){
     return this.marieroui.value;
 }
+
 /**
- *  @param {string}value
+ * Obtient le status de l'employé. Renvoie true s'il est marié et false dans le cas
+ * contraire.
+ * 
+ * @return {boolean}
+ */
+ManipulateurForm.prototype.getEstMarie = function() {
+     return this.marieroui.checked ? 
+        this.marieroui.value :
+        this.mariernon.value;
+}
+
+/**
+ * Indique sur le formulaire si l'employé est marié ou pas.
+ * 
+ * @param {boolean} value
+ * @return {void}
+ */
+ManipulateurForm.prototype.setEstMarie = function(value) {
+    if (value == true) {
+        this.setMarierNon(false);
+        this.setMarierOui(true);
+    } else {
+        this.setMarierNon(true);
+        this.setMarierOui(false);
+    }
+}
+
+/**
+ *  @param {boolean} value
  *  @returns {void}
  */
 ManipulateurForm.prototype.setMarierOui=function(value){
-    this.marieroui.value=value;
+    this.marieroui.checked = value;
 }
 /**
   *  @param {void}
@@ -304,11 +361,11 @@ ManipulateurForm.prototype.setMarierOui=function(value){
     return this.mariernon.value;
 }
 /**
- *  @param {string}value
+ *  @param {boolean} value
  *  @returns {void}
  */
 ManipulateurForm.prototype.setMarierNon=function(value){
-    this.mariernon.value=value;
+    this.mariernon.checked = value;
 }
 /**
   *  @param {void}
@@ -336,7 +393,7 @@ ManipulateurForm.prototype.setPoste=function(value){
  *  @returns {void}
  */
 ManipulateurForm.prototype.setPhone=function(value){
-    this.phone.value=value;
+    this.phone.value= value ? value : '';
 }
 /**
   *  @param {void}
@@ -352,15 +409,73 @@ ManipulateurForm.prototype.setPhone=function(value){
 ManipulateurForm.prototype.setPays=function(value){
     this.pays.value=value;
 }
+
+ManipulateurForm.prototype.appendPays = function(pays) {
+    let paysSelect = document.querySelector('#poste');
+    let optionExists = false; // Permet d'indiquer si l'option existe déjà dans le select ou pas.
+
+    /**
+     * Vérifie si l'option existe déjà c'est-à-dire si le pays est déjà 
+     * dans le select parmi les options pour éviter le doublon.
+     */
+    for (let option of paysSelect.options) {
+        if (option.value == poste) {
+            optionExists = true;
+            break;
+        }
+    }
+
+    /**
+     * Si l'option n'existe pas alors on l'ajoute en d'autre terme, si le pays n'est pas encore 
+     * dans le select on l'ajoute dans le cas contraire on ne l'ajoute pas.
+     * 
+     */
+    if (!optionExists) {
+        let option=document.createElement('option');
+        option.value= pays;
+        option.textContent= pays;
+        document.querySelector("#pays").append(option); 
+    }
+
+    // Après Avoir ajouté le pays dans le select on le sélectionne directement comme valeur du select
+    // Si on efface cette ligne c'est le premier élement du select qui sera sélectionné comme par défaut.
+    this.setPays(pays);
+}
+
 /**
   *  @param {void}
   *  @returns {string}
   */
  ManipulateurForm.prototype.appendPost=function(poste){
-     let option=document.createElement('option');
-     option.value=poste;
-     option.textContent=poste;
-     document.querySelector("#poste").append(option);  
+    let posteSelect = document.querySelector('#poste');
+    let optionExists = false; // Permet d'indiquer si l'option existe déjà dans le select ou pas.
+
+    /**
+     * Vérifie si l'option existe déjà c'est-à-dire si le poste est déjà 
+     * dans le select parmi les options pour éviter le doublon.
+     */
+    for (let option of posteSelect.options) {
+        if (option.value == poste) {
+            optionExists = true;
+            break;
+        }
+    }
+
+    /**
+     * Si l'option n'existe pas alors on l'ajoute en d'autre terme, si le poste n'est pas encore 
+     * dans le select on l'ajoute dans le cas contraire on ne l'ajoute pas.
+     * 
+     */
+    if (!optionExists) {
+        let option=document.createElement('option');
+        option.value=poste;
+        option.textContent=poste;
+        document.querySelector("#poste").append(option); 
+    }
+
+    // Après Avoir ajouté le poste dans le select on le sélectionne directement comme valeur du select
+    // Si on efface cette ligne c'est le premier élement du select qui sera sélectionné comme par défaut.
+    this.setPoste(poste);
 }
 
 /**
@@ -372,8 +487,8 @@ ManipulateurForm.prototype.initializeInput=function(){
     this.setNom('');
     this.setPrenom('');
     this.setEmail('');
-    this.setMarierOui('');
-    this.setMarierNon('');
+    this.setMarierOui(false);
+    this.setMarierNon(false);
     this.setPhone('');
 }
 /**
@@ -390,4 +505,22 @@ ManipulateurForm.prototype.makeIdReadOnly = function() {
 
 ManipulateurForm.prototype.removeReadOnlyConstraint = function() {
     this.id.removeAttribute('readOnly');
+}
+
+/**
+ * Affiche le div de chargement
+ * 
+ * @return {void}
+ */
+ManipulateurForm.prototype.showOverlay = function() {
+    document.querySelector('div.overlay').style.visibility = 'visible';
+}
+
+/**
+ * Cache le div de chargement
+ * 
+ * @return {void}
+ */
+ManipulateurForm.prototype.hideOverlay = function() {
+    document.querySelector('div.overlay').style.visibility = 'hidden';
 }
