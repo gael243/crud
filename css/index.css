@@ -23,3 +23,12 @@ margin-left: -50px;
 .btn-danger{
     margin-left: 2px;
 }
+.table td {
+font-size: 12.4px;
+}
+#non{
+    margin-left: 10px;
+}
+#labelnon{
+    margin-left: 30px;  
+}
