@@ -5,106 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Mapendo</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
     <div class="container">
-       <h1 id="titre">Mapendo Sarl</h1>
-        <div class="row lignegeneral">
-          <div class="col-12">
+        <div class="row lignegeneral my-4">
+          <div class="col-12 py-5">
+              <!-- Div de chargement -->
+            <div class="overlay d-flex align-items-center justify-content-center">
+                <img src="img/Preloader_2.gif" alt="">
+            </div>
+            <!-- End-->
             <div class="row ligne1">
                 <div class="col-lg-6 mx-lg-auto col-12">
-                    <!-- Div de chargement -->
-                    <div class="overlay d-flex align-items-center justify-content-center">
-                        <span>chargement...</span>
-                    </div>
-                    <!-- End-->
+                    <form action="">
+                        <div class="form-row">
+                            <div class="col-12 form-group">
+                                <input type="text" class="form-control" id="id" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6 col-12 form-group">
+                                <input type="text" class="form-control" id="nom" placeholder="Entrer votre Nom">
+                                <div class="invalid-feedback" id="errornom"></div>
+                            </div>
+                            <div class="col-md-6 col-12 form-group">
+                                <input type="text" class="form-control" id="prenom" placeholder="Entrer votre Prenom">
+                                <div class="invalid-feedback" id="errorprenom" ></div>
+                            </div>
+                        </div>
 
-                    <div class="row">
-                        <div class="col-lg-6 form1">
-                                <form>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="id" placeholder="">
-                                    </div>
-                                    <div class="form-group">
-                                    <input type="text" class="form-control" id="nom" placeholder="Entrer votre Nom">
-                                    <span id="errornom"></span>
-                                    </div>
-                                    <div class="form-group">
-                                    <input type="text" class="form-control" id="prenom" placeholder="Entrer votre Prenom">
-                                    <span id="errorprenom" ></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for=""> Etes-vous marier</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="estMarie" value="true" id="oui">
-                                            <label class="form-check-label" for="oui">
-                                            oui
-                                            </label>
-                                            <input class="form-check-input" type="radio" name="estMarie" value="false" id="non">
-                                            <label class="form-check-label" for="non" id="labelnon">
-                                            non
-                                            </label>
-                                        </div>
-                                    </div>
-                                </form>
+                        <div class="form-row">
+                            <div class="col-md-6 col-12 form-group">
+                                <input type="text" class="form-control" id="phone" placeholder="Entrer votre Numeros de télephone">
+                                <div class="invalid-feedback" id="errorphone"></div>
                             </div>
-                            <div class="col-lg-6 form2">
-                                <form> 
-                                        <div class="form-group">
-                                            <label for="poste">Selectionner votre Poste</label>
-                                            <select class="form-control" id="poste">
-                                                <option value="directeur generale">directeur generale</option>
-                                                <option value="directeur generale adjoint">directeur generale adjoint</option>
-                                                <option value="drh">drh</option>
-                                                <option value="assistant drh">assistant drh</option>
-                                                <option value="directeur tresorerie">directeur tresorerie</option>
-                                                <option value="directeur des operations">directeur des operations</option>
-                                                <option value="directeur des credits">directeur des credits</option>
-                                                <option value="directeur informatique">directeur informatique</option>
-                                                <option value="support reseau">support reseau</option>
-                                                <option value="developpeur">developpeur</option>
-                                                <option value="caissier">caissier</option>
-                                                </select>
-                                        </div>
-                                        <div class="form-group">
-                                        <input type="text" class="form-control" id="phone" placeholder="Entrer votre Numeros de télephone">
-                                        <span id="errorphone"></span>
-                                        </div>
-                                        <div class="form-group">
-                                        <input type="email" class="form-control" id="email" placeholder="Entrer votre Email">
-                                        <span id="erroremail"></span>
-                                        </div>
-                                        <div class="form-group">
-                                        <label for="pays">Selectionner votre Pays</label>
-                                        <select class="form-control" id="pays">
-                                            <option value="RDC">RDC</option>
-                                            <option value="OUGANDA">OUGANDA</option>
-                                            <option value="RWANDA">RWANDA</option>
-                                            <option value="BURUNDI">BURUNDI</option>
-                                            <option value="TANZANIE">TANZANIE</option>
-                                            <option value="ANGOLA">ANGOLA</option>
-                                            <option value="MOZAMBIQUE">MOZAMBIQUE</option>
-                                            <option value="AFRIQUE DU SUD">AFRIQUE DU SUD</option>
-                                            <option value="FRANCE">FRANCE</option>
-                                            <option value="BELGIQUE">BELGIQUE</option>
-                                            <option value="BRESILE">BRESILE</option>
-                                            <option value="ETATS UNIS">ETATS UNIS</option>
-                                            <option value="ALLEMAGNE">ALLEMAGNE</option>
-                                            </select>
-                                    </div> 
-                                    <button type="button" id="save" class="btn btn-primary">Submit</button>
-                                    <button type="button" id="update" class="btn btn-warning">Modifier</button>
-                                </form> 
+                            <div class="col-md-6 col-12 form-group">
+                                <input type="email" class="form-control" id="email" placeholder="Entrer votre Email">
+                                <div class="invalid-feedback" id="erroremail"></div>
                             </div>
-                    </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-md-6 col-12 form-group">
+                                <label for="poste">Selectionner votre Poste</label>
+                                <select class="form-control custom-select" id="poste">
+                                    <option value="directeur generale">directeur generale</option>
+                                    <option value="directeur generale adjoint">directeur generale adjoint</option>
+                                    <option value="drh">drh</option>
+                                    <option value="assistant drh">assistant drh</option>
+                                    <option value="directeur tresorerie">directeur tresorerie</option>
+                                    <option value="directeur des operations">directeur des operations</option>
+                                    <option value="directeur des credits">directeur des credits</option>
+                                    <option value="directeur informatique">directeur informatique</option>
+                                    <option value="support reseau">support reseau</option>
+                                    <option value="developpeur">developpeur</option>
+                                    <option value="caissier">caissier</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-12 form-group">
+                                <label for="pays">Selectionner votre Pays</label>
+                                <select class="form-control custom-select" id="pays">
+                                    <option value="RDC">RDC</option>
+                                    <option value="OUGANDA">OUGANDA</option>
+                                    <option value="RWANDA">RWANDA</option>
+                                    <option value="BURUNDI">BURUNDI</option>
+                                    <option value="TANZANIE">TANZANIE</option>
+                                    <option value="ANGOLA">ANGOLA</option>
+                                    <option value="MOZAMBIQUE">MOZAMBIQUE</option>
+                                    <option value="AFRIQUE DU SUD">AFRIQUE DU SUD</option>
+                                    <option value="FRANCE">FRANCE</option>
+                                    <option value="BELGIQUE">BELGIQUE</option>
+                                    <option value="BRESILE">BRESILE</option>
+                                    <option value="ETATS UNIS">ETATS UNIS</option>
+                                    <option value="ALLEMAGNE">ALLEMAGNE</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-md-6 col-12 form-group">
+                                <label for=""> Etes-vous marié(e) ?</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="estMarie" value="true" id="oui">
+                                    <label class="form-check-label" for="oui">
+                                    oui
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="estMarie" value="false" id="non">
+                                    <label class="form-check-label" for="non" id="labelnon">
+                                    non
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-12 form-group text-center">
+                                <button type="button" id="save" class="btn btn-primary">Submit</button>
+                                <button type="button" id="update" class="btn btn-warning">Modifier</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
           </div>
         </div>
         <div class="row">
-            <table class="table">
+            <div class="col-12">
+                <!-- Div de chargement -->
+            <div class="table-overlay d-flex align-items-center justify-content-center">
+                <img src="img/Preloader_2.gif" alt="">
+            </div>
+            <!-- End-->
+            <table class="table table-sm">
                 <thead class="thead-dark">
                     <tr>
                         <th>Nom</th>
@@ -114,16 +129,21 @@
                         <th>Email</th>
                         <th>Poste</th>
                         <th>Telephone</th>
-                        <th>Action</th>
+                        <th colspan="2">Action</th>
                     </tr>
                 </thead>
                 <tbody>
 
                 </tbody>
             </table>
+            </div>
         </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script> -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script src="js/index.js"></script>
 </body>
 </html>

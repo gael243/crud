@@ -11,19 +11,7 @@ afficherTable();
   */
  
  addbutton.addEventListener('click',(e) => {
-    if(!manipulateurForm.getNom().length){
-        let errornom= document.querySelector("#errornom");
-        errornom.textContent="ce champs ne doit pas etre vide";
-     }
-     if(!manipulateurForm.getPrenom().length){
-        let errorprenom= document.querySelector("#errorprenom");
-        errorprenom.textContent="ce champs ne doit pas etre vide";
-     }
-     if(!manipulateurForm.getPhone().length){
-        let errorphone= document.querySelector("#errorphone");
-        errorphone.textContent="ce champs ne doit pas etre vide";
-     }
-    else if(manipulateurForm.getNom().length || manipulateurForm.getPrenom().length ||  manipulateurForm.getPhone().length ){
+     if(manipulateurForm.formulaireEstValide()) {
             axios.post('http://167.71.45.243:4000/api/employes?api_key=urrzckb',{
                 nom:manipulateurForm.getNom(),
                 prenom:manipulateurForm.getPrenom(),
@@ -32,15 +20,15 @@ afficherTable();
                 numeroTelephone:manipulateurForm.getPhone(),
                 estMarie: manipulateurForm.getEstMarie(),
                 pays:manipulateurForm.getPays()
-               })
-                .then((response)=>{
+            })
+            .then((response)=>{
                     afficherTable();
                     console.log(response);
-                }).catch((err)=>{
-                    console.log(err.response.data)
-                })
+            }).catch((err)=>{
+                console.log(err.response.data)
+            });
 
-   manipulateurForm.initializeInput();
+        manipulateurForm.initializeInput();
     }
    },false);
 
@@ -51,71 +39,75 @@ afficherTable();
  */
  function afficherTable(){
      ClearTable();
+    document.querySelector('.table-overlay').style.visibility = 'visible';
 
-axios.get('http://167.71.45.243:4000/api/employes?api_key=urrzckb')
-.then((employers)=>{
-    for(let employer of employers.data){
+    axios.get('http://167.71.45.243:4000/api/employes?api_key=urrzckb')
+    .then((employers)=>{
+        for(let employer of employers.data){
 
-        let tr= document.createElement("tr");
-        tr.setAttribute("id",employer._id);   
-        let tdNom=document.createElement("td");
-        tdNom.textContent=employer.nom;
-        let tdPrenom=document.createElement("td");
-        tdPrenom.textContent=employer.prenom;
-        let tdEstmaries=document.createElement("td");
-        tdEstmaries.textContent=employer.estMarie ? 'Oui' : 'Non';
-        let tdPays=document.createElement("td");
-        tdPays.textContent=employer.pays;
-        let tdEmail=document.createElement("td");
-        tdEmail.textContent=employer.email;
-        let tdPoste=document.createElement("td");
-        tdPoste.textContent=employer.poste;
-        let tdTelephone=document.createElement("td");
-        tdTelephone.textContent=employer.numeroTelephone;  
-    
-        let buttonmodifier=document.createElement("button");
-        buttonmodifier.setAttribute("type","button");
-        buttonmodifier.setAttribute("class","btn btn-primary");
-        buttonmodifier.setAttribute("data-target",employer._id);
-        buttonmodifier.addEventListener('click',onUpdate);
-        buttonmodifier.textContent="modifier";
-        let tdModifier=document.createElement("td").appendChild(buttonmodifier);
+            let tr= document.createElement("tr");
+            tr.setAttribute("id",employer._id);   
+            let tdNom=document.createElement("td");
+            tdNom.textContent=employer.nom;
+            let tdPrenom=document.createElement("td");
+            tdPrenom.textContent=employer.prenom;
+            let tdEstmaries=document.createElement("td");
+            tdEstmaries.textContent=employer.estMarie ? 'Oui' : 'Non';
+            let tdPays=document.createElement("td");
+            tdPays.textContent=employer.pays;
+            let tdEmail=document.createElement("td");
+            tdEmail.textContent=employer.email;
+            let tdPoste=document.createElement("td");
+            tdPoste.textContent=employer.poste;
+            let tdTelephone=document.createElement("td");
+            tdTelephone.textContent=employer.numeroTelephone;  
         
-        let buttondelete=document.createElement("button");
-        buttondelete.setAttribute("type","button");
-        buttondelete.setAttribute("class","btn btn-danger");
-        buttondelete.setAttribute("data-target",employer._id);
-        buttondelete.setAttribute("id",employer._id);
-        buttondelete.textContent="supprimer";
-        buttondelete.addEventListener('click',(e)=>{    
-        const message=confirm("etes-vous sure de vouloir supprimer");
-            if(message){
-          axios.delete(`http://167.71.45.243:4000/api/employes/${employer._id}?api_key=urrzckb`)
-                .then(function(reponse){
-                    afficherTable();
-                }).catch(function(erreur){
-                    console.log(erreur.response)
-                })
-            }else{
-                return;
-            }
-        })
-        let tdDelete=document.createElement("td").appendChild(buttondelete);
-        tr.appendChild(tdNom);
-        tr.appendChild(tdPrenom);
-        tr.appendChild(tdEstmaries);
-        tr.appendChild(tdPays);
-        tr.appendChild(tdEmail);
-        tr.appendChild(tdPoste);
-        tr.appendChild(tdTelephone); 
-        tr.appendChild(tdModifier);
-        tr.appendChild(tdDelete);
-        tbody.appendChild(tr);
-    }
-
-}).catch((err)=>{
-    console.log(err);
-})
+            let buttonmodifier=document.createElement("button");
+            buttonmodifier.setAttribute("type","button");
+            buttonmodifier.setAttribute("class","btn btn-primary");
+            buttonmodifier.setAttribute("data-target",employer._id);
+            buttonmodifier.addEventListener('click',onUpdate);
+            buttonmodifier.textContent="modifier";
+            let tdModifier=document.createElement("td");
+            tdModifier.appendChild(buttonmodifier);
+            
+            let buttondelete=document.createElement("button");
+            buttondelete.setAttribute("type","button");
+            buttondelete.setAttribute("class","btn btn-danger");
+            buttondelete.setAttribute("data-target",employer._id);
+            buttondelete.setAttribute("id",employer._id);
+            buttondelete.textContent="supprimer";
+            buttondelete.addEventListener('click',(e)=>{    
+            const message=confirm("etes-vous sure de vouloir supprimer");
+                if(message){
+            axios.delete(`http://167.71.45.243:4000/api/employes/${employer._id}?api_key=urrzckb`)
+                    .then(function(reponse){
+                        afficherTable();
+                    }).catch(function(erreur){
+                        console.log(erreur.response)
+                    })
+                }else{
+                    return;
+                }
+            })
+            let tdDelete=document.createElement("td");
+            tdDelete.appendChild(buttondelete);
+            tr.appendChild(tdNom);
+            tr.appendChild(tdPrenom);
+            tr.appendChild(tdEstmaries);
+            tr.appendChild(tdPays);
+            tr.appendChild(tdEmail);
+            tr.appendChild(tdPoste);
+            tr.appendChild(tdTelephone); 
+            tr.appendChild(tdModifier);
+            tr.appendChild(tdDelete);
+            tbody.appendChild(tr);
+        }
+        document.querySelector('.table-overlay').style.visibility = 'hidden';
+    }).catch((err)=>{
+        document.querySelector('.table-overlay').style.visibility = 'hidden';
+        console.log(err);
+    })
 }
  /**
   * 
@@ -132,7 +124,7 @@ axios.get('http://167.71.45.243:4000/api/employes?api_key=urrzckb')
     let errorphone= document.querySelector("#errorphone");
     errorphone.textContent="";
     let buttonUpdate=document.querySelector("#update");
-    buttonUpdate.style.display="none";
+    buttonUpdate.style.visibility="hidden";
     manipulateurForm.id.style.display="none";
  }
 
@@ -158,9 +150,9 @@ axios.get('http://167.71.45.243:4000/api/employes?api_key=urrzckb')
         .then(function(response){
 
             let buttonsave=document.querySelector("#save");
-            buttonsave.style.display="none";
+            buttonsave.style.visibility="hidden";
             let buttonupdate=document.querySelector("#update");
-            buttonupdate.style.display="inherit";
+            buttonupdate.style.visibility="visible";
             manipulateurForm.id.style.display="inherit";
             manipulateurForm.makeIdReadOnly();
 
@@ -216,8 +208,8 @@ axios.get('http://167.71.45.243:4000/api/employes?api_key=urrzckb')
           console.log(error);
       });
 
-      buttonupdatedata.style.display = "none";
-      buttonsave.style.display = "inherit";
+      buttonupdatedata.style.visibility = "hidden";
+      buttonsave.style.visibility = "visible";
       manipulateurForm.removeReadOnlyConstraint();
       manipulateurForm.initializeInput();
   })
@@ -236,6 +228,113 @@ axios.get('http://167.71.45.243:4000/api/employes?api_key=urrzckb')
      this.marieroui=document.querySelector("#oui");
      this.mariernon=document.querySelector("#non")
  }
+
+ /**
+  * Vérifie si les données du formulaire sont valides.
+  * 
+  * @return {boolean}
+  */
+ ManipulateurForm.prototype.formulaireEstValide = function () {
+    let flags = [
+        this.nomValide(),
+        this.prenomValide(),
+        this.emailValide(),
+        this.telephoneValide()
+    ];
+
+    return flags.every((flag) => flag === true);
+ }
+
+ /**
+  * Vérifie si le nom est valide.
+  * 
+  * @return {boolean}
+  */
+ ManipulateurForm.prototype.nomValide = function () {
+    let errornom = document.querySelector("#errornom");
+    const flag = this.getNom().length > 0
+
+    if(!flag) {
+        errornom.textContent="Ce champs ne doit pas être vide.";
+        $(this.nom).addClass('is-invalid');
+        $(this.nom).removeClass('is-valid');
+    } else {
+        errornom.textContent=""; 
+        $(this.nom).addClass('is-valid');
+        $(this.nom).removeClass('is-invalid');
+    }
+
+    return flag;
+ }
+
+ /**
+  * Vérifie si le prénom est valide.
+  * 
+  * @return {boolean}
+  */
+ ManipulateurForm.prototype.prenomValide = function () {
+    let errorprenom= document.querySelector("#errorprenom");
+    const flag = this.getPrenom().length > 0;
+
+    if(!flag) {
+        errorprenom.textContent="ce champs ne doit pas etre vide";
+        $(this.prenom).addClass('is-invalid');
+        $(this.prenom).removeClass('is-valid');
+    } else {
+        errorprenom.textContent=""; 
+        $(this.prenom).addClass('is-valid');
+        $(this.prenom).removeClass('is-invalid');
+    }
+
+    return flag;
+ }
+
+ /**
+  * Vérifie si l'adresse courriel saisie dans le formulaire est valide.
+  * 
+  * @return {boolean}
+  */
+ ManipulateurForm.prototype.emailValide = function () {
+    let erroremail = document.querySelector("#erroremail");
+    const flag = /^[a-z0-9][a-z0-9_.]+@[a-z0-9_]+\.[a-z0-9]{2,6}$/.test(this.getEmail());
+
+    // Affiche le message d'erreur sur le formulaireen cas d'échec.
+    if (flag) {
+        erroremail.textContent = "";
+        $(this.email).addClass('is-valid');
+        $(this.email).removeClass('is-invalid');
+    } else {
+        erroremail.textContent = "Votre adresse courriel n'est pas valide.";
+        $(this.email).addClass('is-invalid');
+        $(this.email).removeClass('is-valid');
+    }
+
+    return flag;
+ }
+
+ /**
+  * Vérifie si le numéro de téléphone saisi est valide.
+  * 
+  * @return {boolean}
+  */
+ ManipulateurForm.prototype.telephoneValide = function() {
+     let errorphone = document.querySelector('#errorphone');
+     const flag = /^\+243[0-9]{9}$/.test(this.getPhone());
+
+     // Affiche le message d'erreur sur le formulaire en cas d'échec.
+     if (flag) {
+        errorphone.textContent = '';
+        $(this.phone).addClass('is-valid');
+        $(this.phone).removeClass('is-invalid');
+     } else {
+        errorphone.textContent = "Numéro de téléphone est invalide. Inspirez-vous de cet exemple : +24381000898."
+        $(this.phone).addClass('is-invalid');
+        $(this.phone).removeClass('is-valid');
+     }
+
+     return flag;
+ }
+
  /**
   *  @param {void}
   *  @returns {string}
@@ -472,6 +571,8 @@ ManipulateurForm.prototype.initializeInput=function(){
     this.setMarierOui(false);
     this.setMarierNon(false);
     this.setPhone('');
+
+    $('.form-control').removeClass('is-valid');
 }
 /**
  * @param {void}
