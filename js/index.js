@@ -18,7 +18,7 @@ afficherTable();
                 email:manipulateurForm.getEmail(),
                 poste:manipulateurForm.getPoste(),
                 numeroTelephone:manipulateurForm.getPhone(),
-                estMarie: manipulateurForm.getEstMarie(),
+                etatMarital: manipulateurForm.getStatus(),
                 pays:manipulateurForm.getPays()
             })
             .then((response)=>{
@@ -51,8 +51,8 @@ afficherTable();
             tdNom.textContent=employer.nom;
             let tdPrenom=document.createElement("td");
             tdPrenom.textContent=employer.prenom;
-            let tdEstmaries=document.createElement("td");
-            tdEstmaries.textContent=employer.estMarie ? 'Oui' : 'Non';
+            let tdStatus=document.createElement("td");
+            tdStatus.textContent=employer.etatMarital;
             let tdPays=document.createElement("td");
             tdPays.textContent=employer.pays;
             let tdEmail=document.createElement("td");
@@ -94,7 +94,7 @@ afficherTable();
             tdDelete.appendChild(buttondelete);
             tr.appendChild(tdNom);
             tr.appendChild(tdPrenom);
-            tr.appendChild(tdEstmaries);
+            tr.appendChild(tdStatus);
             tr.appendChild(tdPays);
             tr.appendChild(tdEmail);
             tr.appendChild(tdPoste);
@@ -159,7 +159,7 @@ afficherTable();
             manipulateurForm.setId(response.data._id);
             manipulateurForm.setNom(response.data.nom);
             manipulateurForm.setPrenom(response.data.prenom);
-            manipulateurForm.setEstMarie(response.data.estMarie);
+            manipulateurForm.appendStatus(response.data.etatMarital);
             manipulateurForm.appendPost(response.data.poste);
             manipulateurForm.appendPays(response.data.pays);
             manipulateurForm.setPhone(response.data.numeroTelephone);
@@ -198,14 +198,14 @@ afficherTable();
         email:manipulateurForm.getEmail(),
         poste:manipulateurForm.getPoste(),
         numeroTelephone:manipulateurForm.getPhone(),
-        estMarie: manipulateurForm.getEstMarie(),
+        etatMarital: manipulateurForm.getStatus(),
         pays:manipulateurForm.getPays()
       }).then(response => {
         console.log(response.data);
         afficherTable();  
         manipulateurForm.hideOverlay();
       }).catch(error => {
-          console.log(error);
+          console.log(error.response.message);
       });
 
       buttonupdatedata.style.visibility = "hidden";
@@ -225,8 +225,7 @@ afficherTable();
      this.poste=document.querySelector("#poste");
      this.phone=document.querySelector("#phone");
      this.pays=document.querySelector("#pays");
-     this.marieroui=document.querySelector("#oui");
-     this.mariernon=document.querySelector("#non")
+     this.status=document.querySelector("#status");
  }
 
  /**
@@ -395,58 +394,8 @@ ManipulateurForm.prototype.setEmail=function(value){
   *  @param {void}
   *  @returns {string}
   */
- ManipulateurForm.prototype.getMarierOui=function(){
-    return this.marieroui.value;
-}
-
-/**
- * Obtient le status de l'employé. Renvoie true s'il est marié et false dans le cas
- * contraire.
- * 
- * @return {boolean}
- */
-ManipulateurForm.prototype.getEstMarie = function() {
-     return this.marieroui.checked ? 
-        this.marieroui.value :
-        this.mariernon.value;
-}
-
-/**
- * Indique sur le formulaire si l'employé est marié ou pas.
- * 
- * @param {boolean} value
- * @return {void}
- */
-ManipulateurForm.prototype.setEstMarie = function(value) {
-    if (value == true) {
-        this.setMarierNon(false);
-        this.setMarierOui(true);
-    } else {
-        this.setMarierNon(true);
-        this.setMarierOui(false);
-    }
-}
-
-/**
- *  @param {boolean} value
- *  @returns {void}
- */
-ManipulateurForm.prototype.setMarierOui=function(value){
-    this.marieroui.checked = value;
-}
-/**
-  *  @param {void}
-  *  @returns {string}
-  */
- ManipulateurForm.prototype.getMarierNon=function(){
-    return this.mariernon.value;
-}
-/**
- *  @param {boolean} value
- *  @returns {void}
- */
-ManipulateurForm.prototype.setMarierNon=function(value){
-    this.mariernon.checked = value;
+ ManipulateurForm.prototype.getStatus=function(){
+    return this.status.value;
 }
 /**
   *  @param {void}
@@ -482,6 +431,45 @@ ManipulateurForm.prototype.setPhone=function(value){
   */
  ManipulateurForm.prototype.getPays=function(){
     return this.pays.value;
+}
+/**
+ *  @param {string}value
+ *  @returns {void}
+ */
+ManipulateurForm.prototype.setStatus=function(value){
+    this.pays.value=value;
+}
+
+ManipulateurForm.prototype.appendStatus = function(status) {
+    let statusSelect = document.querySelector('#status');
+    let optionExists = false; // Permet d'indiquer si l'option existe déjà dans le select ou pas.
+
+    /**
+     * Vérifie si l'option existe déjà c'est-à-dire si le status est déjà
+     * dans le select parmi les options pour éviter le doublon.
+     */
+    for (let option of statusSelect.options) {
+        if (option.value == poste) {
+            optionExists = true;
+            break;
+        }
+    }
+
+    /**
+     * Si l'option n'existe pas alors on l'ajoute en d'autre terme, si le status n'est pas encore 
+     * dans le select on l'ajoute dans le cas contraire on ne l'ajoute pas.
+     * 
+     */
+    if (!optionExists) {
+        let option=document.createElement('option');
+        option.value= status;
+        option.textContent= status;
+        document.querySelector("#status").append(option); 
+    }
+
+    // Après Avoir ajouté le status dans le select on le sélectionne directement comme valeur du select
+    // Si on efface cette ligne c'est le premier élement du select qui sera sélectionné comme par défaut.
+    this.setStatus(status);
 }
 /**
  *  @param {string}value
@@ -568,8 +556,6 @@ ManipulateurForm.prototype.initializeInput=function(){
     this.setNom('');
     this.setPrenom('');
     this.setEmail('');
-    this.setMarierOui(false);
-    this.setMarierNon(false);
     this.setPhone('');
 
     $('.form-control').removeClass('is-valid');
